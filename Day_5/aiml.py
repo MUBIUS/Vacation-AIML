@@ -19,11 +19,29 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 # k-NN classifier
-for k in range(1, 5):
+max_k = len(X_train_scaled)
+for k in range(1, max_k + 1):
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train_scaled, y_train)
+    accuracy = knn.score(X_test_scaled, y_test)
+    print(f"Accuracy for k={k}: {accuracy}")
+
+
+import matplotlib.pyplot as plt
+
+accuracies = []
+max_k = len(X_train_scaled)
+for k in range(1, max_k):
     knn = KNeighborsClassifier(n_neighbors=k)
     knn.fit(X_train_scaled, y_train)
     y_pred = knn.predict(X_test_scaled)
-    print(f"Accuracy for k={k}: {accuracy_score(y_test, y_pred)}")
+    accuracies.append(knn.score(X_test_scaled, y_test))
+
+plt.plot(range(1, max_k), accuracies, marker='o')
+plt.xlabel('Number of Neighbors (k)')
+plt.ylabel('Accuracy')
+plt.title('k vs Accuracy')
+plt.show()
 
 
 # Evaluation
